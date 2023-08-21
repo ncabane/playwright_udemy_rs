@@ -1,28 +1,30 @@
+
 const {test, expect} = require('@playwright/test');
-test('@Gen Client App login', async ({page})=>
+const {LoginPage} = require('../pageobjects/LoginPage')
+test.only('@Gen Client App login', async ({page})=>
 {
 
     // login file js, dashboard
-    const email = "anshika@gmail.com";
-    const productName = 'zara coat 3';
+    const username = "anshika@gmail.com";
+    const password = "Iamking@000"
+    const productName = 'Zara Coat 4';
     const products = page.locator(".card-body");
-    await page.goto("https://rahulshettyacademy.com/client");
-    await page.locator("#userEmail").fill("anshika@gmail.com");
-    await page.locator("#userPassword").type("Iamking@000");
-    await page.locator("[value='Login']").click();
+    const loginPage = new LoginPage(page);
+    loginPage.goTo();
+    loginPage.validLogin(username,password)
     await page.waitForLoadState('networkidle');
-   const titles= await page.locator(".card-body b").allTextContents();
-   console.log(titles);
-   const count = await products.count();
-   for(let i =0; i < count; ++i)
-   {
-   if(await products.nth(i).locator("b").textContent() === productName)
-   {
-       //add to cart
-       await products.nth(i).locator("text= Add To Cart").click();
-       break;
-    }
-   }
+    const titles= await page.locator(".card-body b").allTextContents();
+    console.log(titles);
+    const count = await products.count();
+        for(let i =0; i < count; ++i)
+      {
+      if(await products.nth(i).locator("b").textContent() === productName)
+      {
+          //add to cart
+          await products.nth(i).locator("text= Add To Cart").click();
+          break;
+        }
+      }
    await page.locator("[routerlink*='cart']").click();
    await page.locator("div li").first().waitFor();
    const bool = await page.locator("h3:has-text('Zara Coat 4')").isVisible();
