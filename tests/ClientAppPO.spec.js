@@ -1,6 +1,7 @@
 
 const {test, expect} = require('@playwright/test');
-const {LoginPage} = require('../pageobjects/LoginPage')
+const {LoginPage} = require('../pageobjects/LoginPage');
+const {DashboardPage} = require('../pageobjects/DashboardPage')
 test.only('@Gen Client App login', async ({page})=>
 {
 
@@ -10,22 +11,13 @@ test.only('@Gen Client App login', async ({page})=>
     const productName = 'Zara Coat 4';
     const products = page.locator(".card-body");
     const loginPage = new LoginPage(page);
-    loginPage.goTo();
-    loginPage.validLogin(username,password)
-    await page.waitForLoadState('networkidle');
-    const titles= await page.locator(".card-body b").allTextContents();
-    console.log(titles);
-    const count = await products.count();
-        for(let i =0; i < count; ++i)
-      {
-      if(await products.nth(i).locator("b").textContent() === productName)
-      {
-          //add to cart
-          await products.nth(i).locator("text= Add To Cart").click();
-          break;
-        }
-      }
-   await page.locator("[routerlink*='cart']").click();
+    await loginPage.goTo();
+    await loginPage.validLogin(username,password)
+    const dashboardPage = new DashboardPage(page);
+    await dashboardPage.searchProductAddCart(productName);
+    await dashboardPage.navigateToCart()
+   
+
    await page.locator("div li").first().waitFor();
    const bool = await page.locator("h3:has-text('Zara Coat 4')").isVisible();
    expect(bool).toBeFalsy();
