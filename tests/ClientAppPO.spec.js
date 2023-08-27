@@ -1,19 +1,18 @@
 
 const {test, expect} = require('@playwright/test');
-const {LoginPage} = require('../pageobjects/LoginPage');
-const {DashboardPage} = require('../pageobjects/DashboardPage')
+const {POManager} = require('../pageobjects/POManager');
 test.only('@Gen Client App login', async ({page})=>
 {
-
+ new poManager = new POManager();
     // login file js, dashboard
     const username = "anshika@gmail.com";
     const password = "Iamking@000"
     const productName = 'Zara Coat 4';
     const products = page.locator(".card-body");
-    const loginPage = new LoginPage(page);
+    const loginPage = poManager.getLoginPage();
     await loginPage.goTo();
     await loginPage.validLogin(username,password)
-    const dashboardPage = new DashboardPage(page);
+    const dashboardPage = new poManager.getDashboardPage();
     await dashboardPage.searchProductAddCart(productName);
     await dashboardPage.navigateToCart()
    
